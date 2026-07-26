@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KnightOwl · 个人作品集 · 独立设计师 / 创意开发者">
+  <title>KnightOwl · Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       Design Tokens · 深夜墨蓝 + 香槟金 + 暖白
+    ============================================================ */
+    :root {
+      --night-0:  #0a0d18;
+      --night-1:  #0f1320;
+      --night-2:  #161b2c;
+      --night-3:  #1d2238;
+      --night-4:  #262c45;
+      --fog:      #e8e4d8;
+      --fog-2:    #b8b3a6;
+      --fog-3:    #807a6e;
+      --gold:     #d4a86a;
+      --gold-2:   #e8c889;
+      --gold-3:   #b48a4c;
+      --gold-glow: rgba(212, 168, 106, 0.55);
+      --indigo:   #6b7fb8;
+      --mystic:   #9b8ec9;
+      --line:        rgba(232, 228, 216, 0.08);
+      --line-strong: rgba(232, 228, 216, 0.16);
+      --glass:       rgba(232, 228, 216, 0.04);
+      --glass-2:     rgba(232, 228, 216, 0.08);
+      --font-sans:  "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-serif: "Fraunces", "Songti SC", Georgia, serif;
+      --font-mono:  "JetBrains Mono", "Menlo", monospace;
+      --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-soft:   cubic-bezier(0.45, 0, 0.25, 1);
+    }
+
+    /* ============================================================
+       Base · 背景 + 星空 + 噪点（保持）
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--night-0);
+      color: var(--fog);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      letter-spacing: -0.005em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(1100px 700px at 12% 8%, rgba(107, 127, 184, 0.22), transparent 60%),
+        radial-gradient(900px 700px at 88% 92%, rgba(212, 168, 106, 0.10), transparent 60%),
+        radial-gradient(600px 400px at 50% 50%, rgba(155, 142, 201, 0.06), transparent 60%);
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.4  0 0 0 0 0.4  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; cursor: pointer; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(212, 168, 106, 0.25); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212, 168, 106, 0.55); }
+    ::selection { background: rgba(212, 168, 106, 0.35); color: var(--fog); }
+
+    /* 星空画布 */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.85;
+    }
+
+    /* ============================================================
+       Top Nav · 极简胶囊
+    ============================================================ */
+    .topnav {
+      position: fixed;
+      top: 20px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px 8px 18px;
+      background: rgba(15, 19, 32, 0.55);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      transition: top 0.4s var(--ease-out);
+    }
+    .topnav.is-scrolled { top: 12px; }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      padding-right: 14px; margin-right: 4px;
+      border-right: 1px solid var(--line);
+    }
+    .brand-mark {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #1d2238, #0f1320);
+      border: 1px solid var(--gold-3);
+      display: grid; place-items: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 14px var(--gold-glow), inset 0 0 8px rgba(212, 168, 106, 0.20);
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 6px;
+      background: radial-gradient(circle at 30% 30%, rgba(232, 200, 137, 0.35), transparent 60%);
+    }
+    .brand-mark svg {
+      position: relative;
+      z-index: 1;
+      width: 16px; height: 16px;
+      color: var(--gold-2);
+    }
+    .brand-text {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      color: var(--fog);
+    }
+    .topnav ul { list-style: none; display: flex; gap: 2px; }
+    .nav-link {
+      position: relative;
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--fog-2);
+      transition: color 0.25s var(--ease-out), background 0.25s var(--ease-out);
+    }
+    .nav-link:hover { color: var(--fog); background: rgba(232, 228, 216, 0.06); }
+    .nav-link.is-active {
+      color: var(--gold-2);
+      background: rgba(212, 168, 106, 0.14);
+    }
+
+    /* ============================================================
+       Hero · 全新：极简头像 + 昵称 为绝对主角
+    ============================================================ */
+    .hero {
+      position: relative;
+      min-height: 100dvh;
+      padding: 160px 24px 80px;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 1;
+    }
+    /* 月光氛围 */
+    .hero-moon {
+      position: absolute;
+      top: 14%; right: 6%;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(232, 200, 137, 0.65), rgba(212, 168, 106, 0.18) 35%, transparent 70%);
+      filter: blur(30px);
+      pointer-events: none;
+      z-index: 0;
+      animation: moon-float 22s var(--ease-soft) infinite alternate;
+    }
+    .hero-moon-2 {
+      position: absolute;
+      bottom: 8%; left: 4%;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 60% 60%, rgba(107, 127, 184, 0.40), transparent 70%);
+      filter: blur(30px);
+      pointer-events: none;
+      z-index: 0;
+      animation: moon-float 26s var(--ease-soft) infinite alternate-reverse;
+    }
+    @keyframes moon-float {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to   { transform: translate3d(-20px, 20px, 0) scale(1.06); }
+    }
+
+    /* 主角：英雄头像 */
+    .hero-portrait {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 36px;
+      border-radius: 50%;
+      padding: 6px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-3));
+      box-shadow: 0 30px 80px -28px var(--gold-glow), 0 0 0 1px rgba(212, 168, 106, 0.20);
+      animation: portrait-breathe 6s var(--ease-soft) infinite;
+      z-index: 3;
+    }
+    @keyframes portrait-breathe {
+      0%, 100% {
+        box-shadow: 0 30px 80px -28px var(--gold-glow), 0 0 0 1px rgba(212, 168, 106, 0.20);
+        transform: translateY(0);
+      }
+      50% {
+        box-shadow: 0 40px 90px -28px var(--gold-glow), 0 0 0 1px rgba(212, 168, 106, 0.40);
+        transform: translateY(-3px);
+      }
+    }
+    .hero-portrait::before {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      border-radius: 50%;
+      border: 1px dashed rgba(212, 168, 106, 0.30);
+      animation: ring-spin 30s linear infinite;
+    }
+    .hero-portrait::after {
+      content: "";
+      position: absolute;
+      inset: -32px;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 168, 106, 0.10);
+      animation: ring-spin 60s linear infinite reverse;
+    }
+    @keyframes ring-spin { to { transform: rotate(360deg); } }
+    .hero-portrait-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(232, 200, 137, 0.45), transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(107, 127, 184, 0.55), transparent 60%),
+        linear-gradient(135deg, var(--night-2), var(--night-4));
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+      z-index: 4;
+    }
+    .hero-portrait-img::before {
+      content: "K";
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 96px;
+      /* 同 .section-title em: 抛弃 background-clip:text,改用实色金色 + text-shadow 模拟金光晕,
+         避免 transparent fill + 渐变背景在滚动合成 / GPU 图层切换 / 浏览器渲染异常时
+         让字母完全不可见 ("图字" 被遮挡的根因)。 */
+      color: var(--gold-2);
+      text-shadow:
+        0 0 24px rgba(232, 200, 137, 0.45),
+        0 2px 0 rgba(212, 168, 106, 0.25);
+      line-height: 1;
+      padding: 0.04em 0 0.1em;
+    }
+    /* 在线指示点 */
+    .status-dot {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--night-0);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 0 4px var(--night-0);
+      z-index: 4;
+    }
+    .status-dot::after {
+      content: "";
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #6bd09a;
+      box-shadow: 0 0 0 4px rgba(107, 208, 154, 0.30);
+      animation: dot-live 2.4s var(--ease-soft) infinite;
+    }
+    @keyframes dot-live {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(107, 208, 154, 0.30); }
+      50%      { box-shadow: 0 0 0 8px rgba(107, 208, 154, 0.10); }
+    }
+
+    /* 昵称 */
+    .hero-nickname {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: clamp(40px, 6vw, 88px);
+      line-height: 1.15;
+      letter-spacing: -0.035em;
+      padding: 0.08em 0 0.18em;
+      margin-bottom: 14px;
+      /* 不再使用 background-clip:text / -webkit-text-fill-color:transparent,
+         改用实色 color: var(--fog) + 同色系渐变 text-shadow 模拟原渐变光感,
+         修复 "图字被遮挡" 在滚动合成 / GPU 图层丢失场景下 transparent fill 失效的 bug。 */
+      color: var(--fog);
+      text-shadow:
+        0 1px 0 rgba(212, 207, 194, 0.35),
+        0 8px 32px rgba(142, 135, 150, 0.25);
+      animation: hero-rise 1.1s 0.1s var(--ease-out) both;
+    }
+    .hero-nickname .word.gold {
+      /* 同上修复策略:实色金色 + 同色系光晕模拟渐变,杜绝 transparent fill 失效。 */
+      color: var(--gold-2);
+      text-shadow:
+        0 0 20px rgba(232, 200, 137, 0.45),
+        0 1px 0 rgba(212, 168, 106, 0.30);
+      font-style: italic;
+    }
+
+    .hero-handle {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fog-3);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      animation: hero-rise 1.2s 0.2s var(--ease-out) both;
+    }
+    .hero-handle::before, .hero-handle::after {
+      content: "";
+      width: 24px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+    }
+
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(24px); filter: blur(8px); }
+      to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 28px; left: 0; right: 0;
+      margin: 0 auto;
+      width: max-content;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      color: var(--fog-3);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 600;
+      animation: hero-rise 1.5s 0.6s var(--ease-out) both;
+    }
+    .scroll-cue .line {
+      width: 1px; height: 36px;
+      background: linear-gradient(180deg, var(--gold), transparent);
+      animation: cue-line 2s var(--ease-soft) infinite;
+    }
+    @keyframes cue-line {
+      from { transform: scaleY(0); transform-origin: top; }
+      to   { transform: scaleY(1); transform-origin: top; }
+    }
+
+    /* ============================================================
+       Section 通用
+    ============================================================ */
+    .section {
+      position: relative;
+      padding: 120px 24px;
+      max-width: 1280px;
+      margin: 0 auto;
+      z-index: 1;
+    }
+    .section-head {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 56px;
+    }
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .section-tag::before {
+      content: "";
+      width: 22px; height: 1px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      color: var(--fog);
+    }
+    .section-title em {
+      font-style: italic;
+      font-weight: 500;
+      /* 不再使用 background-clip:text / -webkit-text-fill-color:transparent 方案。
+         该方案在部分浏览器 / 滚动合成 / GPU 图层丢失 / prefers-reduced-motion 切换等场景下，
+         渐变背景与 transparent fill 会同时失效，导致 em 内的汉字(例:"静默的星图"中的"图")
+         完全不可见，视觉上表现为"被遮挡"。
+
+         当前方案:实色金色(color: var(--gold-2)) + 同色系渐变 text-shadow 模拟柔和金光晕。
+         视觉仍呈金色，字在任何渲染场景下都绝对可见。 */
+      color: var(--gold-2);
+      text-shadow:
+        0 0 18px rgba(232, 200, 137, 0.35),
+        0 1px 0 rgba(212, 168, 106, 0.20);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================================
+       Work · 极简作品集（核心）
+    ============================================================ */
+    .work-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    .work-card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(15, 19, 32, 0.55);
+      overflow: hidden;
+      isolation: isolate;
+      cursor: pointer;
+      transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.4s var(--ease-out);
+    }
+    .work-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(212, 168, 106, 0.40);
+      box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 168, 106, 0.20);
+    }
+    .work-cover {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background:
+        radial-gradient(120% 90% at 18% 30%, rgba(212, 168, 106, 0.45), transparent 60%),
+        radial-gradient(140% 110% at 82% 80%, rgba(107, 127, 184, 0.55), transparent 65%),
+        linear-gradient(135deg, var(--night-2) 0%, var(--night-4) 100%);
+    }
+    .work-cover::before {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background: radial-gradient(60% 50% at 30% 35%, rgba(232, 200, 137, 0.35), transparent 65%);
+      animation: cover-drift 14s var(--ease-soft) infinite alternate;
+    }
+    .work-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 28%),
+        linear-gradient(180deg, transparent 65%, rgba(10, 13, 24, 0.50) 100%);
+      pointer-events: none;
+    }
+    /* 4 个变体 */
+    .work-card:nth-child(1) .work-cover {
+      background:
+        radial-gradient(120% 90% at 18% 30%, rgba(232, 200, 137, 0.45), transparent 60%),
+        radial-gradient(140% 110% at 82% 80%, rgba(212, 168, 106, 0.55), transparent 65%),
+        linear-gradient(135deg, #2a2532 0%, #5a4533 50%, var(--gold-3) 100%);
+    }
+    .work-card:nth-child(2) .work-cover {
+      background:
+        radial-gradient(120% 90% at 80% 25%, rgba(107, 127, 184, 0.55), transparent 60%),
+        radial-gradient(120% 110% at 20% 80%, rgba(155, 142, 201, 0.55), transparent 65%),
+        linear-gradient(160deg, #14182a 0%, #1d2238 50%, #2a3a5e 100%);
+    }
+    .work-card:nth-child(3) .work-cover {
+      background:
+        radial-gradient(120% 90% at 30% 70%, rgba(212, 168, 106, 0.45), transparent 60%),
+        radial-gradient(120% 110% at 85% 25%, rgba(180, 138, 76, 0.55), transparent 65%),
+        linear-gradient(200deg, #0f1320 0%, #2c2a3a 55%, #5a4533 100%);
+    }
+    .work-card:nth-child(4) .work-cover {
+      background:
+        radial-gradient(120% 90% at 75% 75%, rgba(245, 230, 200, 0.30), transparent 60%),
+        radial-gradient(120% 110% at 25% 25%, rgba(155, 142, 201, 0.55), transparent 65%),
+        linear-gradient(120deg, #161b2c 0%, #2a2e4a 50%, #4a3a2a 100%);
+    }
+    @keyframes cover-drift {
+      from { transform: translate3d(-6%, -4%, 0) scale(1.02); }
+      to   { transform: translate3d( 8%,  6%, 0) scale(1.08); }
+    }
+    /* 浮现的标题 */
+    .work-cover-title {
+      position: absolute;
+      bottom: 22px; left: 24px;
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-style: italic;
+      font-size: 36px;
+      letter-spacing: -0.03em;
+      color: var(--fog);
+      opacity: 0.85;
+      transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out);
+      z-index: 1;
+    }
+    .work-card:hover .work-cover-title { opacity: 1; transform: translateY(-2px); }
+    /* 角落小图标 */
+    .work-cover-arrow {
+      position: absolute;
+      top: 18px; right: 18px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(15, 19, 32, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: grid; place-items: center;
+      color: var(--fog);
+      font-size: 14px;
+      transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out), transform 0.4s var(--ease-spring);
+      z-index: 2;
+    }
+    .work-card:hover .work-cover-arrow {
+      background: linear-gradient(135deg, var(--gold), var(--gold-3));
+      color: var(--night-0);
+      transform: rotate(-45deg) scale(1.05);
+    }
+
+    .work-body {
+      padding: 24px 26px 26px;
+    }
+    .work-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .work-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .work-year {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--fog-3);
+    }
+    .work-name {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 24px;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 10px;
+      color: var(--fog);
+    }
+    .work-desc {
+      color: var(--fog-2);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    .work-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .pill-tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(232, 228, 216, 0.06);
+      color: var(--fog-2);
+      border: 1px solid var(--line);
+    }
+
+    /* ============================================================
+       Social · 极简一行社交
+    ============================================================ */
+    .social-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .social-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(15, 19, 32, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--fog-2);
+      transition: transform 0.3s var(--ease-spring), border-color 0.3s var(--ease-out), color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+    }
+    .social-chip:hover {
+      transform: translateY(-2px);
+      border-color: rgba(212, 168, 106, 0.45);
+      color: var(--gold-2);
+      background: rgba(212, 168, 106, 0.06);
+    }
+    .social-chip svg {
+      width: 16px; height: 16px;
+      color: var(--gold-2);
+    }
+
+    /* ============================================================
+       Reveal
+    ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ============================================================
+       Responsive
+    ============================================================ */
+    @media (max-width: 960px) {
+      .topnav { width: calc(100% - 24px); }
+      .topnav ul { display: none; }
+      .work-list { grid-template-columns: 1fr; }
+      .hero-moon, .hero-moon-2 { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding: 130px 20px 60px; }
+      .section { padding: 80px 20px; }
+      .topnav .brand-text { display: none; }
+      .hero-portrait { width: 140px; height: 140px; }
+      .hero-portrait-img::before { font-size: 72px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 星空画布 -->
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <!-- =================== Top Nav =================== -->
+  <nav class="topnav" aria-label="主导航">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2c-2.5 0-4.5 1.8-4.5 4.2 0 1 .3 1.9.9 2.6-2.5.8-4.4 2.9-4.4 5.4 0 .8.2 1.5.5 2.2-1.7 1-2.5 2.7-2.5 4.3 0 1.5.7 2.8 1.8 3.7L12 22l8.2 2.4c1.1-.9 1.8-2.2 1.8-3.7 0-1.6-.8-3.3-2.5-4.3.3-.7.5-1.4.5-2.2 0-2.5-1.9-4.6-4.4-5.4.6-.7.9-1.6.9-2.6C16.5 3.8 14.5 2 12 2z"/>
+          <circle cx="9.5" cy="9.5" r="1.2" fill="currentColor"/>
+          <circle cx="14.5" cy="9.5" r="1.2" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="brand-text">KnightOwl</div>
+    </div>
+    <ul>
+      <li><a class="nav-link is-active" href="#top" data-target="top">首页</a></li>
+      <li><a class="nav-link" href="#work" data-target="work">作品</a></li>
+      <li><a class="nav-link" href="#social" data-target="social">链接</a></li>
+    </ul>
+  </nav>
+
+  <!-- =================== Hero · 极简主角 =================== -->
+  <header class="hero" id="top">
+    <div class="hero-moon" aria-hidden="true"></div>
+    <div class="hero-moon-2" aria-hidden="true"></div>
+
+    <div class="hero-portrait reveal">
+      <div class="hero-portrait-img"></div>
+      <span class="status-dot" aria-label="在线"></span>
+    </div>
+
+    <h1 class="hero-nickname">KnightOwl</h1>
+
+    <div class="hero-handle reveal">@knightowl · portfolio</div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <span>Scroll</span>
+      <span class="line"></span>
+    </div>
+  </header>
+
+  <!-- =================== Work · 作品集 =================== -->
+  <section class="section" id="work">
+    <div class="section-head reveal">
+      <div class="section-tag">— Selected Works</div>
+      <h2 class="section-title">作品 ·<em>星图</em></h2>
+    </div>
+
+    <div class="work-list">
+
+      <article class="work-card reveal">
+        <div class="work-cover">
+          <span class="work-cover-arrow" aria-hidden="true">↗</span>
+          <div class="work-cover-title">Lumen</div>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="work-num">№ 01</span>
+            <span class="work-year">2026</span>
+          </div>
+          <h4 class="work-name">[请提供: 项目 1 名称]</h4>
+          <p class="work-desc">[请提供: 项目 1 简介，一句话阐述项目价值。]</p>
+          <div class="work-tags">
+            <span class="pill-tag">设计系统</span>
+            <span class="pill-tag">交互</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="work-card reveal">
+        <div class="work-cover">
+          <span class="work-cover-arrow" aria-hidden="true">↗</span>
+          <div class="work-cover-title">Nocturne</div>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="work-num">№ 02</span>
+            <span class="work-year">2026</span>
+          </div>
+          <h4 class="work-name">[请提供: 项目 2 名称]</h4>
+          <p class="work-desc">[请提供: 项目 2 简介，一句话阐述项目价值。]</p>
+          <div class="work-tags">
+            <span class="pill-tag">品牌</span>
+            <span class="pill-tag">网站</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="work-more-wrap reveal">
+      <a href="#social" class="btn-pill more-btn" id="viewMoreBtn">
+        查看更多
+        <span class="more-arrow" aria-hidden="true">↓</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- =================== Social · 极简链接 =================== -->
+  <section class="section" id="social" style="padding: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div class="section-head reveal" style="text-align: center;">
+      <div class="section-tag" style="justify-content: center;">— Links</div>
+    </div>
+
+    <div class="social-row reveal">
+      <a class="social-chip" href="mailto:[请提供: 联系邮箱]">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Email
+      </a>
+      <a class="social-chip" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.30 3.44 9.80 8.21 11.39.60.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.05-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.20.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.30 3.50 1.00.11-.78.42-1.30.76-1.60-2.67-.30-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.52.12-3.18 0 0 1.01-.32 3.30 1.23.96-.27 1.98-.40 3.00-.40 1.02 0 2.04.13 3.00.40 2.29-1.55 3.30-1.23 3.30-1.23.66 1.66.24 2.87.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.80 5.62-5.47 5.92.43.37.81 1.10.81 2.22 0 1.61-.01 2.90-.01 3.29 0 .32.22.70.83.58C20.56 21.79 24 17.30 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a class="social-chip" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Twitter
+      </a>
+      <a class="social-chip" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.56c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.66H9.36V9h3.41v1.56h.05c.48-.90 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43c-1.14 0-2.06-.93-2.06-2.06 0-1.14.92-2.06 2.06-2.06 1.13 0 2.06.92 2.06 2.06 0 1.13-.93 2.06-2.06 2.06zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.20 0 22.22 0z"/></svg>
+        LinkedIn
+      </a>
+      <a class="social-chip" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.20 0 3.58.01 4.85.07 1.17.05 1.80.25 2.23.41.56.22.96.48 1.38.90.42.42.68.82.90 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85 0 3.20-.01 3.58-.07 4.85-.05 1.17-.25 1.80-.41 2.23-.22.56-.48.96-.90 1.38-.42.42-.82.68-1.38.90-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07-3.20 0-3.58-.01-4.85-.07-1.17-.05-1.80-.25-2.23-.41-.56-.22-.96-.48-1.38-.90-.42-.42-.68-.82-.90-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.20 2.16 12c0-3.20.01-3.58.07-4.85.05-1.17.25-1.80.41-2.23.22-.56.48-.96.90-1.38.42-.42.82-.68 1.38-.90.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.80 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.77.13 4.90.33 4.14.63c-.79.31-1.46.72-2.13 1.39C1.34 2.69.93 3.36.62 4.15.32 4.91.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91.31.79.72 1.46 1.39 2.13.67.67 1.34 1.08 2.13 1.39.76.30 1.63.50 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.39.67-.67 1.08-1.34 1.39-2.13.30-.76.50-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.39-2.13C21.31 1.34 20.64.93 19.85.62 19.09.32 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 0 0 5.84 12 6.16 6.16 0 0 0 12 18.16 6.16 6.16 0 0 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg>
+        Instagram
+      </a>
+    </div>
+  </section>
+
+  <script>
+    /* 星空 · Reveal · 锚点 */
+    (function () {
+      var $  = function (s, c) { return (c || document).querySelector(s); };
+      var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+      var canvas = document.getElementById('starfield');
+      var ctx = canvas.getContext('2d');
+      var stars = [];
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var mouseX = 0, mouseY = 0;
+
+      function resize() {
+        var w = window.innerWidth, h = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        spawn();
+      }
+      function spawn() {
+        stars = [];
+        var count = Math.min(90, Math.floor(window.innerWidth / 14));
+        for (var i = 0; i < count; i++) {
+          var angle = Math.random() * Math.PI * 2;
+          var speed = 0.05 + Math.random() * 0.12;
+          stars.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 1.4 + 0.2,
+            a: Math.random() * 0.7 + 0.2,
+            tw: Math.random() * 0.02 + 0.005,
+            phase: Math.random() * Math.PI * 2,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed * 0.6,
+            gold: Math.random() < 0.18
+          });
+        }
+      }
+      function render() {
+        var w = window.innerWidth, h = window.innerHeight;
+        ctx.clearRect(0, 0, w, h);
+        for (var i = 0; i < stars.length; i++) {
+          var s = stars[i];
+          var alpha = s.a + Math.sin(s.phase) * 0.25;
+          s.phase += s.tw;
+          s.x += s.vx + mouseX * 0.25;
+          s.y += s.vy + mouseY * 0.15;
+          if (s.x < -4) s.x += w + 8;
+          else if (s.x > w + 4) s.x -= w + 8;
+          if (s.y < -4) s.y += h + 8;
+          else if (s.y > h + 4) s.y -= h + 8;
+          var color = s.gold ? '212, 168, 106' : '232, 228, 216';
+          ctx.fillStyle = 'rgba(' + color + ', ' + Math.max(0, alpha) + ')';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+          if (s.gold && s.r > 1) {
+            ctx.fillStyle = 'rgba(212, 168, 106, ' + (alpha * 0.2) + ')';
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        requestAnimationFrame(render);
+      }
+      window.addEventListener('pointermove', function (e) {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+      window.addEventListener('resize', resize);
+      resize();
+      render();
+
+      /* Reveal */
+      var reveals = $$('.reveal');
+      if ('IntersectionObserver' in window) {
+        var revealIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var group = entry.target.parentNode;
+              var idx = $$('.reveal', group).indexOf(entry.target);
+              entry.target.style.transitionDelay = ((idx >= 0 ? idx : 0) % 6) * 80 + 'ms';
+              entry.target.classList.add('revealed');
+              revealIO.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function (el) { revealIO.observe(el); });
+      } else {
+        reveals.forEach(function (el) { el.classList.add('revealed'); });
+      }
+
+      /* Top nav */
+      var nav = $('.topnav');
+      var navLinks = $$('.topnav .nav-link');
+      var sections = navLinks.map(function (a) {
+        return document.getElementById(a.dataset.target);
+      }).filter(Boolean);
+      var setActive = function (id) {
+        navLinks.forEach(function (a) {
+          if (a.dataset.target === id) a.classList.add('is-active');
+          else a.classList.remove('is-active');
+        });
+      };
+      var onScroll = function () {
+        if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 16);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      if ('IntersectionObserver' in window && sections.length) {
+        var navIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) setActive(entry.target.id);
+          });
+        }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+        sections.forEach(function (s) { navIO.observe(s); });
+      }
+
+      /* 平滑滚动 · 共用整屏 tween 引擎，避免原生 smooth 减速卡顿 */
+      $$('a[href^="#"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          var id = a.getAttribute('href');
+          if (id.length < 2) return;
+          var target = document.querySelector(id);
+          if (!target) return;
+          e.preventDefault();
+          // 走整屏系统(startAnim):确保 tween 目标 = panelTops[i],
+          // 避免与 scroll 兜底吸附互相冲突造成死循环。
+          // 桥接函数在下方 startAnim 定义后赋值。
+          if (typeof window.__siteGoToPanel === 'function') {
+            window.__siteGoToPanel(target);
+          } else {
+            // 兜底:系统尚未初始化,使用原生 scroll
+            var y = target.getBoundingClientRect().top + window.scrollY - 60;
+            window.scrollTo(0, y);
+          }
+        });
+      });
+
+      /* ============================================================
+         整屏滚动 · 滚轮 / 键盘 / 触摸 · 极致跟手（行业顶尖水准）
+         核心目标:零延迟响应 + 丝滑过渡 + 精准吸附。
+         策略:
+           · wheel 每次事件直接读取 deltaY 方向,不做累积/节流/防抖
+           · 非 passive + preventDefault 阻止原生滚动,杜绝原生滚动与 tween 互抢
+           · 状态机最简化:ANIM 中新 wheel 直接 cancel 旧 tween 并启动新 tween(立即响应)
+           · 移除反向锁 REVERSE_LOCK_MS,移除 PENDING_DELAY,移除所有 setTimeout 节流
+           · rAF + 平滑缓动(smoothstep ≈ cubic-bezier(0.25, 0.1, 0.25, 1))
+           · scroll 事件兜底吸附(仅 IDLE 状态触发,不动 ANIM)—— 杜绝骑屏最后防线
+      ============================================================ */
+      (function () {
+        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var isCoarse = window.matchMedia('(pointer: coarse)').matches;
+
+        // 1. 开屏锁定 + 关闭浏览器原生 smooth CSS(避免与 rAF tween 互相干扰导致减速卡顿)
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo(0, 0);
+
+        // 2. 主要整屏区域:hero + 两个 section
+        var panels = [document.getElementById('top'), document.getElementById('work'), document.getElementById('social')]
+          .filter(Boolean);
+        if (panels.length < 2) return;
+
+        // 3. 状态机常量(最简:仅 ANIM / IDLE 二态)
+        var STATE_IDLE = 0;
+        var STATE_ANIM = 1;
+        var state = STATE_IDLE;
+        var currentIdx = 0;
+        var currentAnim = null;
+
+        // 4. 动画时长与阈值(行业顶尖调参)
+        var SCROLL_DURATION = 520;        // 用户指定区间 400~600ms,取中位 520
+        var SCROLL_SNAP_DURATION = 220;   // 兜底吸附时长(短而柔)
+        var DIST_EPS = 0.5;               // 偏离阈值(亚像素级吸附精度)
+        var reduceMotion = prefersReduced;
+
+        // 平滑缓动函数:smoothstep —— 数学上等价于 p² (3 - 2p),
+        // 视觉上几乎与 cubic-bezier(0.25, 0.1, 0.25, 1) 完全一致,
+        // 且计算成本最低(每帧仅 3 次乘法),保证 60fps 稳定不掉帧。
+        function easeOut(p) {
+          return p * p * (3 - 2 * p);
+        }
+
+        // 5. 几何缓存 + 自动失效(resize / 内容尺寸变化)
+        var panelTops = panels.map(function (p) {
+          return p.getBoundingClientRect().top + window.scrollY;
+        });
+        function refreshPanelTops() {
+          var y = window.scrollY;
+          for (var i = 0; i < panels.length; i++) {
+            panelTops[i] = panels[i].getBoundingClientRect().top + y;
+          }
+        }
+
+        // 6. rAF 驱动的缓动 tween —— 替代浏览器原生 smooth,完全掌控 scrollY
+        var scrollToFn = window.scrollTo.bind(window);
+
+        // 吸附到最近的 panel —— 任何中间态的最终兜底目标
+        function nearestPanelY(y) {
+          var best = panelTops[0];
+          var bestD = Math.abs(y - best);
+          for (var i = 1; i < panelTops.length; i++) {
+            var d = Math.abs(y - panelTops[i]);
+            if (d < bestD) { bestD = d; best = panelTops[i]; }
+          }
+          return best;
+        }
+        function nearestPanelIdx(y) {
+          var best = 0;
+          var bestD = Math.abs(y - panelTops[0]);
+          for (var i = 1; i < panelTops.length; i++) {
+            var d = Math.abs(y - panelTops[i]);
+            if (d < bestD) { bestD = d; best = i; }
+          }
+          return best;
+        }
+
+        // 底层 tween(统一引擎,所有过渡共用)
+        //   每帧主动设置 scrollY(无 behavior),避免原生 CSS smooth 抢主导
+        //   取消时旧 tween 让位,新 tween 从当前位置接管过渡 —— 实现"方向反转立即响应"
+        function runTween(targetY, duration, onDone) {
+          if (reduceMotion || duration <= 0) {
+            scrollToFn(0, targetY);
+            currentAnim = null;
+            if (onDone) onDone();
+            return;
+          }
+          var startY = window.scrollY;
+          var delta = targetY - startY;
+          if (Math.abs(delta) < DIST_EPS) {
+            scrollToFn(0, targetY);
+            currentAnim = null;
+            if (onDone) onDone();
+            return;
+          }
+          var t0 = performance.now();
+          var handle = { cancelled: false };
+          handle.cancel = function () { handle.cancelled = true; };
+          if (currentAnim && currentAnim !== handle) currentAnim.cancel();
+          currentAnim = handle;
+          function tick(now) {
+            if (handle.cancelled) return;
+            var p = (now - t0) / duration;
+            if (p >= 1) {
+              scrollToFn(0, targetY);
+              if (currentAnim === handle) currentAnim = null;
+              if (onDone) onDone();
+              return;
+            }
+            var e = easeOut(p);
+            scrollToFn(0, startY + delta * e);
+            requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        }
+
+        // 7. 启动向指定 panel 的整屏过渡 —— 任何来源(wheel / 键盘 / 触摸 / 锚点)统一入口
+        function startAnim(toIdx) {
+          if (toIdx < 0 || toIdx >= panels.length) return;
+          refreshPanelTops();
+          currentIdx = toIdx;
+          var targetY = panelTops[toIdx];
+          state = STATE_ANIM;
+          runTween(targetY, SCROLL_DURATION, function () {
+            state = STATE_IDLE;
+            // tween 结束后做一次亚像素校准:杜绝 rAF 累积误差造成的 1~2px 骑屏
+            var y = window.scrollY;
+            if (Math.abs(y - targetY) > DIST_EPS) {
+              scrollToFn(0, targetY);
+            }
+          });
+        }
+
+        // 8. 暴露给锚点滚动共用的桥接函数(锚点点击 → 定位到目标 panel)
+        window.__siteGoToPanel = function (target) {
+          refreshPanelTops();
+          var p = target;
+          while (p && p.parentElement && panels.indexOf(p) < 0) p = p.parentElement;
+          var idx = panels.indexOf(p);
+          if (idx < 0) idx = currentIdx;
+          startAnim(idx);
+        };
+
+        // 9. 滚轮:每次事件立即响应(零延迟 / 零累积 / 零防抖)
+        //    关键策略:不累积 wheelAccum,每次 wheel 直接读 deltaY 方向,瞬间 tryStep
+        //    这样哪怕最轻微的滚轮一格也会立即触发(≤ 16ms 一帧内响应)
+        //    ANIM 中:旧 tween 直接 cancel,新 tween 从当前位置接管过渡(无缝方向反转)
+        window.addEventListener('wheel', function (e) {
+          if (e.ctrlKey) return;          // 缩放手势不接管
+          e.preventDefault();             // 阻止原生滚动,杜绝与 rAF tween 抢主导
+          var dir = e.deltaY > 0 ? 1 : -1;
+          var next = currentIdx + dir;
+          if (next < 0 || next >= panels.length) return;
+          startAnim(next);                // 立即响应,无 setTimeout / 无 rAF 延迟
+        }, { passive: false });
+
+        // 10. 键盘(方向键 / PageUp/PageDown / Space)
+        window.addEventListener('keydown', function (e) {
+          var tag = (e.target && e.target.tagName) || '';
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+          if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+            e.preventDefault();
+            var next = currentIdx + 1;
+            if (next < panels.length) startAnim(next);
+          } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+            e.preventDefault();
+            var next = currentIdx - 1;
+            if (next >= 0) startAnim(next);
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            startAnim(0);
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            startAnim(panels.length - 1);
+          }
+        });
+
+        // 11. 触摸:在阈值距离内累积触发(每帧 read dy 决定方向)
+        if (isCoarse || 'ontouchstart' in window) {
+          var touchStartY = 0;
+          var touchStartX = 0;
+          var touchActive = false;
+          var touchFired = false;
+          var touchThreshold = 0;
+          var touchLastIdx = -1;
+          window.addEventListener('touchstart', function (e) {
+            if (e.touches.length !== 1) return;
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+            touchActive = true;
+            touchFired = false;
+            touchLastIdx = -1;
+            touchThreshold = Math.max(28, window.innerHeight * 0.14);
+          }, { passive: true });
+          window.addEventListener('touchmove', function (e) {
+            if (!touchActive || e.touches.length !== 1) return;
+            var t = e.touches[0];
+            var dy = touchStartY - t.clientY;
+            var dx = touchStartX - t.clientX;
+            // 横向滚动为主时不接管(留给原生滚动,避免与横向组件冲突)
+            if (Math.abs(dx) > Math.abs(dy) * 1.4) return;
+            e.preventDefault();
+            if (Math.abs(dy) < touchThreshold) return;
+            if (touchFired) return;
+            touchFired = true;
+            // 重置起点,允许连续多次翻屏(每次触摸周期最多翻一次,避免误触连续触发)
+            touchStartY = t.clientY;
+            var dir = dy > 0 ? 1 : -1;
+            var next = currentIdx + dir;
+            if (next >= 0 && next < panels.length) startAnim(next);
+          }, { passive: false });
+          window.addEventListener('touchend', function () {
+            touchActive = false;
+            touchFired = false;
+          }, { passive: true });
+          window.addEventListener('touchcancel', function () {
+            touchActive = false;
+            touchFired = false;
+          }, { passive: true });
+        }
+
+        // 12. 「查看更多」按钮
+        var moreBtn = document.getElementById('viewMoreBtn');
+        if (moreBtn) {
+          moreBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var next = currentIdx + 1;
+            if (next < panels.length) startAnim(next);
+          });
+        }
+
+        // 13. 滚动事件兜底吸附 —— 仅 IDLE 状态触发,不动 ANIM
+        //     任何路径(拖滚动条 / 浏览器恢复 / 系统手势 / 未拦截成功的 wheel)只要
+        //     scrollY 偏离任一 panel 顶部超过 0.5px,立即短吸附到最近屏(220ms)。
+        //     这是"杜绝骑屏"的最后防线,不影响 ANIM 中的丝滑过渡。
+        function enforceSnap() {
+          if (state !== STATE_IDLE) return;
+          if (currentAnim) return;
+          var y = window.scrollY;
+          var idx = nearestPanelIdx(y);
+          currentIdx = idx;
+          var target = panelTops[idx];
+          if (Math.abs(y - target) <= DIST_EPS) return;
+          state = STATE_ANIM;
+          runTween(target, SCROLL_SNAP_DURATION, function () {
+            state = STATE_IDLE;
+            var y2 = window.scrollY;
+            if (Math.abs(y2 - target) > DIST_EPS) scrollToFn(0, target);
+          });
+        }
+        window.addEventListener('scroll', enforceSnap, { passive: true });
+        // scrollend 兜底(现代浏览器):滚动序列结束立即检查
+        if ('onscrollend' in window || 'scrollend' in window) {
+          window.addEventListener('scrollend', enforceSnap, { passive: true });
+        }
+
+        // 14. resize 防抖 + ResizeObserver 监听 panel 内容尺寸变化
+        var resizeTimer = 0;
+        window.addEventListener('resize', function () {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            refreshPanelTops();
+          }, 150);
+        });
+        if (typeof ResizeObserver !== 'undefined') {
+          var ro = new ResizeObserver(function () {
+            refreshPanelTops();
+          });
+          panels.forEach(function (p) { ro.observe(p); });
+        }
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(refreshPanelTops);
+        }
+
+        // 15. 初始化:刷新后立即定位到当前 panel,确保 panelTops / currentIdx / state 三者一致
+        (function init() {
+          refreshPanelTops();
+          var y = window.scrollY;
+          currentIdx = nearestPanelIdx(y);
+          var best = panelTops[currentIdx];
+          // 刷新后强制对齐(无动画,避免视觉跳动)
+          if (Math.abs(y - best) > DIST_EPS) {
+            scrollToFn(0, best);
+          }
+        })();
+      })();
+    })();
+  </script>
+</body>
+</html>
